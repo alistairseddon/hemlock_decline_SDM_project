@@ -68,14 +68,18 @@ prep_spec_data <- function(NA_pollen,
   dataToPlot
   }
 
-map_species <- function(.data = tsuga_6k, .var= "Tsuga"){
+map_species <- function(.data = tsuga_6k, .var= "Tsuga", .title = "Tsuga Presence XXyr"){
   theme_set(theme_bw())
   world <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")
   ggplot(data = world) +
     geom_sf() +
     xlab("Longitude") + ylab("Latitude") +
     coord_sf(xlim = c(-130, -60), ylim = c(20, 75), expand = FALSE) +
-    geom_point(data = .data, aes(x = long, y = lat, col = eval(parse(text =.var))))
+    geom_point(data = .data, aes(x = long, y = lat, col = eval(parse(text =.var)))) +
+    labs(col = .var)+
+    theme(legend.title = element_text(size= 10)) +
+    ggtitle(.title)
+  
 }
 
 
@@ -159,5 +163,38 @@ fit.model <- function(.data =tsuga_4k_clim) {
   
   return(list(training.data = training.data, validation.data= validation.data, model_glm = model_glm ))
 }
+
+
+
+
+
+
+calc_response_functions <- function(.data = tsuga_4k_clim, .model = model_glm_6ky ){
+  
+  # Create a varible holding precipitation/ GDD constant (at the mean value) and let GDD vary within the range seen in the data
+  meanGDD <- mean(.data$an_sum_GDD5)
+  minGDD <- min(.data$an_sum_GDD5)
+  maxGDD <- max(.data$an_sum_GDD5)
+  
+  meanPRCP <- mean(.data$an_sum_PRCP)
+  minPRCP <- min(.data$an_sum_PRCP)
+  maxPRCP <- max(.data$an_sum_PRCP)
+  
+  # Calculate the Response functions for GDD
+  new.data.GDD <- data.frame(an_sum_GDD5  = seq(from = minGDD, to = maxGDD, length.out = 200), 
+                             an_sum_PRCP = rep(meanPRCP, length = 200))
+  predict_GDD <- predict(.model, type = "response", newdata= new.data.GDD )
+  
+  # Calculate the Response functions for precipitation
+  new.data.PRCP <- data.frame(an_sum_GDD5 = rep(meanGDD, length = 200),
+                              an_sum_PRCP  = seq(from = minPRCP, to = maxPRCP, length.out = 200) )
+  predict_PRCP <- predict(.model, type = "response", newdata= new.data.PRCP )
+  
+  # Plot the response functions
+  par(mfrow = c(2,2))
+  plot(new.data.GDD$an_sum_GDD5, predict_GDD, type = "l", col = "red", xlab = "Annual Sum Growing Degree Days", ylab = "Model Probability")
+  plot(new.data.PRCP$an_sum_PRCP, predict_PRCP, type = "l", col = "blue", xlab = "Annual Sum Precipiation", ylab = "Model Probability")
+}
+
 
 
