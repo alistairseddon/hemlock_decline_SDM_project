@@ -1,6 +1,9 @@
 # hemlock_decline_SDM_project
 An ecological palaeoecology project for undergraduate/ masters students which uses species distribution modelling to investigate the climatic drivers of the hemlock decline.
+
 Contact alistair.seddon@uib.no for more information
+
+Note that the project uses the renv() package to run analyses. If working from your own machine you can install renv() and then use renv::restore() to lone the packages that were used when the project was created. See https://rstudio.github.io/renv/ for more details.
 
 # data
 ## CCSM 
