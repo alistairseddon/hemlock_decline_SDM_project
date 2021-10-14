@@ -9,7 +9,7 @@ library("raster")
 library("caret")
 library("rgeos")
 
-source("function_script.R")
+source("Rscripts/function_script.R")
 
 # Load data
 NA_pollen <- readRDS("data/NA_pollen.RDS") %>% 
