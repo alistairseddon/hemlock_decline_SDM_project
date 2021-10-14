@@ -25,9 +25,9 @@ calc_year_pres_abs <- function(.x, .species.name,  .year){
   year <- .year
   
   pres_abs_spec <- .x$pres.abs[[1]]
-  clim <- .x$ClimData[[1]]
+  age <- .x$list_ages[[1]]$ages
   
-  spec_data <- bind_cols(clim, pres_abs_spec) %>% 
+  spec_data <- bind_cols(age, pres_abs_spec) %>% 
     dplyr::select(age,species.name) %>% 
     # minimum_temperature, mean_temperature, precipitation,  relative_humidity, sea_level_pressure, specific_humidity, ) %>% 
     mutate(age.diff = (age - year)^2) %>% 
