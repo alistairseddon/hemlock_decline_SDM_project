@@ -13,8 +13,7 @@ source("function_script.R")
 # Load data
 
 NA_pollen <- readRDS("data/NA_pollen.RDS") %>% 
-  filter(long > -95 & between(lat, 35, 55) & max.age > 5500) %>% 
-  dplyr::select(-ref)
+  filter(long > -95 & between(lat, 35, 55) & max.age > 5500)
 
 names(NA_pollen)
 # First thing to do is extract the data for hemlock for a given time period.
