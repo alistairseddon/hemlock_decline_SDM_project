@@ -38,19 +38,19 @@ calc_year_pres_abs <- function(.x, .species.name,  .year){
 }
 
 
-prep_spec_data <- function(NA_pollen_climate,
+prep_spec_data <- function(NA_pollen,
                            .species.name = "Tsuga", 
                            .threshold = 0.05, 
                            .year = 6000  ){
   # Get the presence absence data
-  pres_abs_data <- NA_pollen_climate %>% 
+  pres_abs_data <- NA_pollen %>% 
     group_by(dataset.id) %>% 
     nest() %>% 
     mutate(.species.name = .species.name, .threshold = .threshold) %>% 
     mutate(pres.abs = pmap(.l = list(data, .species.name, .threshold), 
                            .f = get_species_pres_abs)) %>% 
     dplyr::select(dataset.id, pres.abs) %>% 
-    left_join(NA_pollen_climate) %>% 
+    left_join(NA_pollen) %>% 
     group_by(dataset.id) %>% 
     nest()
   
@@ -60,7 +60,7 @@ prep_spec_data <- function(NA_pollen_climate,
                                .f = calc_year_pres_abs)) %>%
     dplyr::select(dataset.id, age_pres_abs) %>%
     unnest(cols = c(age_pres_abs)) %>%
-    left_join(NA_pollen_climate) %>%
+    left_join(NA_pollen) %>%
     dplyr::select(dataset.id, lat, long, elev,  age, .species.name) 
   # minimum_temperature, mean_temperature, precipitation, relative_humidity, sea_level_pressure, specific_humidity)
   save(dataToPlot,
