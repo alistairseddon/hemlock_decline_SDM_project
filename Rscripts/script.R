@@ -8,7 +8,7 @@ library("sf")
 library("raster")
 library("caret")
 library("rgeos")
-
+# install.packages("rgdal")
 source("Rscripts/function_script.R")
 
 # Load data
@@ -33,6 +33,11 @@ map_species(tsuga_6k, .var= "Tsuga", .title = "Tsuga Presence 6 kyr")
 #### Getting the climate data
 tsuga_6k_clim <- get_climate_data(.data = tsuga_6k, .year = "6000") %>% drop_na()
 
+# inspect che climate variables
+tsuga_6k_clim %>% 
+  ungroup() %>% 
+  dplyr::select(an_avg_TMIN:an_sum_GDD5) %>% 
+  pairs()
 ##. etc
 
 # Fitting a model to test for the relationship between hemlock presence and temperature/ precipitation
@@ -50,6 +55,8 @@ summary(model_glm_6ky)
 ### Use the Kappa statistic to evaluate the predictions of the model against the actual observed values (higher is better)
 kappa <- caret::confusionMatrix(as.factor(model_results_6ky$validation.data$Tsuga),
                        as.factor(model_results_6ky$validation.data$predicted_pres_glm))$overall[2]
+
+kappa
 
 # It is also possible to inspect the response functions of the two variables
 # See the function: calc_response_functions
