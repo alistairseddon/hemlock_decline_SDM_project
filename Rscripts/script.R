@@ -8,7 +8,8 @@ library("sf")
 library("raster")
 library("caret")
 library("rgeos")
-# install.packages("rgdal")
+library("rgdal")
+
 source("Rscripts/function_script.R")
 
 # Load data
