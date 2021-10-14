@@ -1,3 +1,5 @@
+# Use renv::restore() when attempting to run this on a new machine!
+
 library("tidyverse")
 library("ggplot2")
 library("rnaturalearth")
@@ -6,12 +8,10 @@ library("sf")
 library("raster")
 library("caret")
 library("rgeos")
-# install.packages("rgdal")
 
 source("function_script.R")
 
 # Load data
-
 NA_pollen <- readRDS("data/NA_pollen.RDS") %>% 
   filter(long > -95 & between(lat, 35, 55) & max.age > 5500)
 
