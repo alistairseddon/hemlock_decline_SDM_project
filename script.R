@@ -11,27 +11,19 @@ library("rgeos")
 source("function_script.R")
 
 # Load data
-NA_pollen_climate <- readRDS("data/NA_pollen_climate.RDS")
-names(NA_pollen_climate)
-NA_pollen_climate <- readRDS("data/NA_pollen_climate.RDS") %>% 
+
+NA_pollen <- readRDS("data/NA_pollen.RDS") %>% 
   filter(long > -95 & between(lat, 35, 55) & max.age > 5500) %>% 
   dplyr::select(-ref)
 
 
 # First thing to do is extract the data for hemlock for a given time period.
 # Determine a threshold for presence data (0.05) and then plot. 
-tsuga_6k <- prep_spec_data(NA_pollen_climate,
+tsuga_6k <- prep_spec_data(NA_pollen,
                .species.name = "Tsuga", 
                .threshold = 0.05, 
                .year = 6000 )
-tsuga_5k <- prep_spec_data(NA_pollen_climate,
-                           .species.name = "Tsuga", 
-                           .threshold = 0.05, 
-                           .year = 5000 )
-tsuga_4k <- prep_spec_data(NA_pollen_climate,
-                           .species.name = "Tsuga", 
-                           .threshold = 0.05, 
-                           .year = 4000 )
+
 ## .etc
 
 ### Mapping the data
@@ -54,7 +46,7 @@ model_results_6ky <- fit.model(.data =tsuga_6k_clim)
 quartz()
 map_species(model_results_6ky$training.data, .var = "predicted_pres_glm")
 
-# inspect the model- which variables are significant?
+# inspect the model using summary
 model_glm_6ky <- model_results_6ky$model_glm
 summary(model_glm_6ky)
 
@@ -67,5 +59,4 @@ caret::confusionMatrix(as.factor(model_results_6ky$validation.data$Tsuga),
 # See the function: calc_response_functions
 calc_response_functions(.data = tsuga_6k_clim, .model = model_glm_6ky )
 
-# Now use these functions to explore hemlock dynamics over the late Holocene...
 
