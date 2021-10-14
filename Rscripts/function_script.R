@@ -61,7 +61,7 @@ prep_spec_data <- function(NA_pollen,
     dplyr::select(dataset.id, age_pres_abs) %>%
     unnest(cols = c(age_pres_abs)) %>%
     left_join(NA_pollen) %>%
-    dplyr::select(dataset.id, lat, long, elev,  age, .species.name) 
+    dplyr::select(dataset.id, lat, long, elev,  age, all_of(.species.name))
   # minimum_temperature, mean_temperature, precipitation, relative_humidity, sea_level_pressure, specific_humidity)
   save(dataToPlot,
        file= paste0("output/dataToPlot_",.year,"_",.species.name, "_", .threshold, ".RData"))
